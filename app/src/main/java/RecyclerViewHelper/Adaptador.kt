@@ -1,5 +1,6 @@
 package RecyclerViewHelper
 
+import android.app.AlertDialog
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
@@ -35,6 +36,7 @@ class Adaptador(private var Datos: List<dataClassProductos>) : RecyclerView.Adap
         notifyItemChanged(1)
         notifyDataSetChanged()
     }
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder
     {
         val vista = LayoutInflater.from(parent.context).inflate(R.layout.activity_item_card, parent, false)
@@ -45,11 +47,23 @@ class Adaptador(private var Datos: List<dataClassProductos>) : RecyclerView.Adap
     {
         val prod = Datos[position]
         holder.textView.text = prod.nombreProducto
-
         val item = Datos[position]
+
         holder.imgBorrar.setOnClickListener {
-            eliminarRegistro(item.nombreProducto, position)
+            val context = holder.itemView.context
+
+            val builder = AlertDialog.Builder(context)
+            builder.setTitle("¿Estás seguro?")
+            builder.setMessage("¿Desea eliminar el registro?")
+            builder.setPositiveButton("Si"){ dialog, which ->
+                eliminarRegistro(item.nombreProducto, position)
+            }
+            builder.setNegativeButton("No"){ dialog, which ->
+
+            }
+            val alertDialog = builder.create()
+            alertDialog.show()
         }
-        holder.imgEditar
+
     }
 }
