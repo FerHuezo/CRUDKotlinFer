@@ -17,6 +17,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import modelo.ClaseConexion
 import modelo.dataClassProductos
+import java.util.UUID
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -54,8 +55,11 @@ class MainActivity : AppCompatActivity() {
                 val productos = mutableListOf<dataClassProductos>()
                 while (resultset.next())
                 {
-                    val nombre = resultset.getString("precio")
-                    val producto = dataClassProductos(nombre)
+                    val uuid = resultset.getString("uuid")
+                    val nombre = resultset.getString("nombreProducto")
+                    val precio = resultset.getInt("precio")
+                    val cantidad = resultset.getInt("cantidad")
+                    val producto = dataClassProductos(uuid,nombre,precio,cantidad)
                     productos.add(producto)
                 }
                 return productos
@@ -73,10 +77,11 @@ class MainActivity : AppCompatActivity() {
 
                 val claseConexion = ClaseConexion().CadenaConexion()
 
-                val addProd = claseConexion?.prepareStatement("insert into tbProductos values(?,?,?)")!!
-                addProd.setString(1, Nombre.text.toString())
-                addProd.setInt(2, Precio.text.toString().toInt())
-                addProd.setInt(3, Cantidad.text.toString().toInt())
+                val addProd = claseConexion?.prepareStatement("insert into tbProductos(uuid,nombreProducto, precio, cantidad) values(?,?,?,?)")!!
+                addProd.setString(1, UUID.randomUUID().toString())
+                addProd.setString(2, Nombre.text.toString())
+                addProd.setInt(3, Precio.text.toString().toInt())
+                addProd.setInt(4, Cantidad.text.toString().toInt())
                 addProd.executeUpdate()
 
                 val newProd = obtenerDatos()
