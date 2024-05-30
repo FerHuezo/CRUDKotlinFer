@@ -9,6 +9,7 @@ import fer.huezo.myapplication.R
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import modelo.ClaseConexion
 import modelo.dataClassProductos
 
@@ -51,7 +52,16 @@ class Adaptador(private var Datos: List<dataClassProductos>) : RecyclerView.Adap
             val commit = objConexion.prepareStatement("commit")!!
             commit.executeUpdate()
 
+            withContext(Dispatchers.Main){
+                actualizarLista(uuid, nombreProducto)
+            }
         }
+    }
+
+    fun actualizarLista(uuid: String, newName: String){
+        val index = Datos.indexOfFirst { it.uuid == uuid }
+        Datos[index].nombreProducto = newName
+        notifyItemChanged(index)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder
@@ -97,5 +107,8 @@ holder.imgEditar.setOnClickListener {
     }
 
 }
+        holder.itemView.setOnClickListener {
+
+        }
     }
 }
